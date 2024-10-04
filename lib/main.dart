@@ -2,7 +2,7 @@ import 'package:account/screens/form_screen.dart';
 import 'package:account/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:account/provider/transaction_provider.dart';
+import 'package:account/provider/renewable_energy_provider.dart';  // เปลี่ยนจาก TransactionProvider เป็น RenewableEnergyProvider
 
 void main() {
   runApp(const MyApp());
@@ -17,11 +17,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) {
-          return TransactionProvider();
+          return RenewableEnergyProvider();  // เปลี่ยนเป็น RenewableEnergyProvider
         }),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'แอปพลังงานหมุนเวียน',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
@@ -42,9 +42,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
-    // TODO: implement initState
+    // โหลดข้อมูลพลังงานหมุนเวียน
     super.initState();
-    Provider.of<TransactionProvider>(context, listen: false).initData();
+    Provider.of<RenewableEnergyProvider>(context, listen: false).initData();  // เปลี่ยนเป็น RenewableEnergyProvider
   }
 
   @override
@@ -54,14 +54,14 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Scaffold(
           body: TabBarView(
             children: [
-              HomeScreen(),
-              FormScreen(),
+              HomeScreen(),    // หน้าแสดงรายการพลังงานหมุนเวียน
+              FormScreen(),    // หน้าเพิ่มข้อมูลพลังงานหมุนเวียน
             ],
           ),
-          bottomNavigationBar: TabBar(
+          bottomNavigationBar: const TabBar(
             tabs: [
-              Tab(text: "รายการธุรกรรม", icon: Icon(Icons.list),),
-              Tab(text: "เพิ่มข้อมูล", icon: Icon(Icons.add),),
+              Tab(text: "รายการพลังงาน", icon: Icon(Icons.list)),  // เปลี่ยนข้อความให้สอดคล้องกับโปรเจ็ค
+              Tab(text: "เพิ่มข้อมูล", icon: Icon(Icons.add)),
             ],
           ),
         ));
