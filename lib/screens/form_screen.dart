@@ -12,7 +12,8 @@ class FormScreen extends StatelessWidget {
   final houseSizeController = TextEditingController();
   final numberOfResidentsController = TextEditingController();
   final averageEnergyUsageController = TextEditingController();
-  final locationController = TextEditingController();
+  final latitudeController = TextEditingController();  // เพิ่มตัวควบคุมละติจูด
+  final longitudeController = TextEditingController(); // เพิ่มตัวควบคุมลองจิจูด
   final roofAreaController = TextEditingController();
   final roofDirectionController = TextEditingController();
   final appliancesController = TextEditingController();
@@ -67,15 +68,30 @@ class FormScreen extends StatelessWidget {
                   return null;
                 },
               ),
+              // ฟิลด์สำหรับกรอกละติจูด
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'House Location',
+                  labelText: 'Latitude (Lat)',
                 ),
-                keyboardType: TextInputType.text,
-                controller: locationController,
+                keyboardType: TextInputType.number,
+                controller: latitudeController,
                 validator: (String? input) {
-                  if (input == null || input.isEmpty) {
-                    return 'Please enter the location';
+                  if (input == null || input.isEmpty || double.tryParse(input) == null) {
+                    return 'Please enter a valid latitude';
+                  }
+                  return null;
+                },
+              ),
+              // ฟิลด์สำหรับกรอกลองจิจูด
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Longitude (Lon)',
+                ),
+                keyboardType: TextInputType.number,
+                controller: longitudeController,
+                validator: (String? input) {
+                  if (input == null || input.isEmpty || double.tryParse(input) == null) {
+                    return 'Please enter a valid longitude';
                   }
                   return null;
                 },
@@ -130,23 +146,26 @@ class FormScreen extends StatelessWidget {
                       houseSize: double.parse(houseSizeController.text),
                       numberOfResidents: int.parse(numberOfResidentsController.text),
                       averageEnergyUsage: double.parse(averageEnergyUsageController.text),
-                      location: locationController.text,
+                      location: 'Lat: ${latitudeController.text}, Lon: ${longitudeController.text}', // เก็บข้อมูลละติจูดและลองจิจูดในฟิลด์ location
                       roofArea: double.parse(roofAreaController.text),
                       roofDirection: roofDirectionController.text,
                       appliances: appliancesController.text,
                     );
-                    
+
                     // เพิ่มข้อมูลไปที่ Provider
                     var provider = Provider.of<RenewableEnergyProvider>(context, listen: false);
                     provider.addEnergy(renewableEnergy);
 
                     // กลับไปยังหน้าแสดงผลหลัก
-                    Navigator.push(context, MaterialPageRoute(
-                      fullscreenDialog: true,
-                      builder: (context) {
-                        return MyHomePage();  // กลับไปยังหน้า Home
-                      },
-                    ));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        fullscreenDialog: true,
+                        builder: (context) {
+                          return MyHomePage(); // กลับไปยังหน้า Home
+                        },
+                      ),
+                    );
                   }
                 },
               ),

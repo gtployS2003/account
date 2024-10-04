@@ -47,8 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: Text('Energy Type: ${energy.energyType}'),
                     subtitle: Text(
                         'Household Size: ${energy.houseSize} sq.m.\n'
-                        'จำนวนผู้อยู่อาศัย: ${energy.numberOfResidents} people\n'
-                        'Number of Occupants: ${energy.averageEnergyUsage} kWh\n'
+                        'Number of Occupants: ${energy.numberOfResidents} people\n'
+                        'Average Monthly Electricity Usage: ${energy.averageEnergyUsage} kWh\n'
                         'Location: ${energy.location}\n'
                         'Roof Area for Installation: ${energy.roofArea} sq.m.\n'
                         'Roof Direction: ${energy.roofDirection}\n'
