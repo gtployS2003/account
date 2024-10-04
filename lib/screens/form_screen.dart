@@ -1,4 +1,3 @@
-import 'package:geolocator/geolocator.dart';
 import 'package:account/main.dart';
 import 'package:account/models/renewable_energy.dart';
 import 'package:account/screens/home_screen.dart';
