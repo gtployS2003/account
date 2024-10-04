@@ -2,6 +2,7 @@ import 'package:account/screens/form_screen.dart';
 import 'package:account/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:account/provider/renewable_energy_provider.dart';  // เปลี่ยนจาก TransactionProvider เป็น RenewableEnergyProvider
 
 void main() {
@@ -11,8 +12,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
-  @override
+    @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
@@ -21,12 +21,21 @@ class MyApp extends StatelessWidget {
         }),
       ],
       child: MaterialApp(
-        title: 'แอปพลังงานหมุนเวียน',
         theme: ThemeData(
+          fontFamily: 'Sarabun',  // ใช้ฟอนต์ Sarabun ที่รองรับภาษาไทย
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const MyHomePage(),
+        locale: const Locale('th', 'TH'),  // กำหนดค่า locale ให้รองรับภาษาไทย
+        supportedLocales: const [
+          Locale('en', 'US'),
+          Locale('th', 'TH'),
+        ],
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        home: const MyHomePage(),  // ใช้ MyHomePage เป็นหน้าเริ่มต้น
       ),
     );
   }
@@ -44,26 +53,29 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // โหลดข้อมูลพลังงานหมุนเวียน
     super.initState();
-    Provider.of<RenewableEnergyProvider>(context, listen: false).initData();  // เปลี่ยนเป็น RenewableEnergyProvider
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<RenewableEnergyProvider>(context, listen: false).initData();  // เปลี่ยนเป็น RenewableEnergyProvider
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          body: TabBarView(
-            children: [
-              HomeScreen(),    // หน้าแสดงรายการพลังงานหมุนเวียน
-              FormScreen(),    // หน้าเพิ่มข้อมูลพลังงานหมุนเวียน
-            ],
-          ),
-          bottomNavigationBar: const TabBar(
-            tabs: [
-              Tab(text: "รายการพลังงาน", icon: Icon(Icons.list)),  // เปลี่ยนข้อความให้สอดคล้องกับโปรเจ็ค
-              Tab(text: "เพิ่มข้อมูล", icon: Icon(Icons.add)),
-            ],
-          ),
-        ));
+      length: 2,
+      child: Scaffold(
+        body: TabBarView(
+          children: [
+            HomeScreen(),    // หน้าแสดงรายการพลังงานหมุนเวียน
+            FormScreen(),    // หน้าเพิ่มข้อมูลพลังงานหมุนเวียน
+          ],
+        ),
+        bottomNavigationBar: const TabBar(
+          tabs: [
+            Tab(text: "Energy List", icon: Icon(Icons.list)),  // เปลี่ยนข้อความให้สอดคล้องกับโปรเจ็ค
+            Tab(text: "Add Data", icon: Icon(Icons.add)),
+          ],
+        ),
+      ),
+    );
   }
 }

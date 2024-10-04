@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text("แอปพลังงานหมุนเวียน"),
+        title: const Text("Renewable Energy App"),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // ตรวจสอบว่ามีรายการพลังงานหมุนเวียนหรือไม่
           if (provider.energies.isEmpty) {
             return const Center(
-              child: Text('ไม่มีรายการ'),
+              child: Text('No items available'),
             );
           } else {
             return ListView.builder(
@@ -44,17 +44,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   margin:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                   child: ListTile(
-                    title: Text('ประเภทพลังงาน: ${energy.energyType}'),
+                    title: Text('Energy Type: ${energy.energyType}'),
                     subtitle: Text(
-                        'พื้นที่ติดตั้ง: ${energy.installationArea} ตร.ม.\n'
-                        'การใช้พลังงาน: ${energy.energyUsage} kWh/เดือน\n'
-                        'ต้นทุนการติดตั้ง: ${energy.installationCost} บาท\n'
-                        'ประหยัดพลังงาน: ${energy.energySaving} kWh/ปี\n'
-                        'ระยะเวลาคืนทุน: ${energy.paybackPeriod} ปี'),
+                        'Household Size: ${energy.houseSize} sq.m.\n'
+                        'จำนวนผู้อยู่อาศัย: ${energy.numberOfResidents} people\n'
+                        'Number of Occupants: ${energy.averageEnergyUsage} kWh\n'
+                        'Location: ${energy.location}\n'
+                        'Roof Area for Installation: ${energy.roofArea} sq.m.\n'
+                        'Roof Direction: ${energy.roofDirection}\n'
+                        'Frequently Used Appliances: ${energy.appliances}'),
                     leading: CircleAvatar(
                       radius: 30,
                       child: FittedBox(
-                        child: Text('${energy.energySaving} kWh'),
+                        child: Text('${energy.houseSize} sq.m.'),
                       ),
                     ),
                     trailing: IconButton(

@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  geolocator: ^9.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -40,6 +41,8 @@ dependencies:
   sembast: ^3.7.4
   path_provider: ^2.1.4
   path: ^1.9.0
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
@@ -93,3 +96,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  fonts:
+    - family: Sarabun
+      fonts:
+        - asset: fonts/Sarabun-Regular.ttf
+        - asset: fonts/Sarabun-Bold.ttf
+          weight: 700

@@ -1,26 +1,28 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:account/main.dart';
 import 'package:account/models/renewable_energy.dart';
 import 'package:account/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:account/provider/renewable_energy_provider.dart';  // เปลี่ยนเป็น renewable energy provider ถ้าจำเป็น
+import 'package:account/provider/renewable_energy_provider.dart';
 
 class FormScreen extends StatelessWidget {
   FormScreen({super.key});
 
   final formKey = GlobalKey<FormState>();
-  final energyTypeController = TextEditingController();
-  final installationAreaController = TextEditingController();
-  final energyUsageController = TextEditingController();
-  final installationCostController = TextEditingController();
-  final energySavingController = TextEditingController();
-  final paybackPeriodController = TextEditingController();
+  final houseSizeController = TextEditingController();
+  final numberOfResidentsController = TextEditingController();
+  final averageEnergyUsageController = TextEditingController();
+  final locationController = TextEditingController();
+  final roofAreaController = TextEditingController();
+  final roofDirectionController = TextEditingController();
+  final appliancesController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('แบบฟอร์มข้อมูลพลังงานหมุนเวียน'),
+        title: const Text('Renewable Energy Data Form'),
       ),
       body: Form(
         key: formKey,
@@ -29,95 +31,110 @@ class FormScreen extends StatelessWidget {
             children: [
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'ประเภทพลังงาน (โซลาร์เซลล์, กังหันลม ฯลฯ)',
+                  labelText: 'House Size (sq.m.)',
                 ),
-                autofocus: false,
-                controller: energyTypeController,
-                validator: (String? str) {
-                  if (str!.isEmpty) {
-                    return 'กรุณากรอกข้อมูล';
+                keyboardType: TextInputType.number,
+                controller: houseSizeController,
+                validator: (String? input) {
+                  if (input == null || input.isEmpty || double.tryParse(input) == null || double.parse(input) < 0) {
+                    return 'Please enter valid information';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'ขนาดพื้นที่ติดตั้ง (ตร.ม.)',
+                  labelText: 'Number of Occupants',
                 ),
                 keyboardType: TextInputType.number,
-                controller: installationAreaController,
+                controller: numberOfResidentsController,
                 validator: (String? input) {
-                  if (input == null || input.isEmpty || double.tryParse(input) == null || double.parse(input) < 0) {
-                    return 'กรุณากรอกข้อมูลที่ถูกต้อง';
+                  if (input == null || input.isEmpty || int.tryParse(input) == null || int.parse(input) <= 0) {
+                    return 'Please enter a valid number';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'ปริมาณการใช้พลังงาน (kWh ต่อเดือน)',
+                  labelText: 'Average Monthly Electricity Usage (kWh)',
                 ),
                 keyboardType: TextInputType.number,
-                controller: energyUsageController,
+                controller: averageEnergyUsageController,
                 validator: (String? input) {
                   if (input == null || input.isEmpty || double.tryParse(input) == null || double.parse(input) < 0) {
-                    return 'กรุณากรอกข้อมูลที่ถูกต้อง';
+                    return 'Please enter valid information';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'ต้นทุนการติดตั้ง (บาท)',
+                  labelText: 'House Location',
                 ),
-                keyboardType: TextInputType.number,
-                controller: installationCostController,
+                keyboardType: TextInputType.text,
+                controller: locationController,
                 validator: (String? input) {
-                  if (input == null || input.isEmpty || double.tryParse(input) == null || double.parse(input) < 0) {
-                    return 'กรุณากรอกข้อมูลที่ถูกต้อง';
+                  if (input == null || input.isEmpty) {
+                    return 'Please enter the location';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'การประหยัดพลังงาน (kWh ต่อปี)',
+                  labelText: 'Roof Area for Solar Panel Installation (sq.m.)',
                 ),
                 keyboardType: TextInputType.number,
-                controller: energySavingController,
+                controller: roofAreaController,
                 validator: (String? input) {
                   if (input == null || input.isEmpty || double.tryParse(input) == null || double.parse(input) < 0) {
-                    return 'กรุณากรอกข้อมูลที่ถูกต้อง';
+                    return 'Please enter valid information';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'ระยะเวลาคืนทุน (ปี)',
+                  labelText: 'Roof Direction (e.g., North, South, East, West)',
                 ),
-                keyboardType: TextInputType.number,
-                controller: paybackPeriodController,
+                keyboardType: TextInputType.text,
+                controller: roofDirectionController,
                 validator: (String? input) {
-                  if (input == null || input.isEmpty || double.tryParse(input) == null || double.parse(input) < 0) {
-                    return 'กรุณากรอกข้อมูลที่ถูกต้อง';
+                  if (input == null || input.isEmpty) {
+                    return 'Please enter the roof direction';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Frequently Used Appliances',
+                ),
+                keyboardType: TextInputType.text,
+                controller: appliancesController,
+                validator: (String? input) {
+                  if (input == null || input.isEmpty) {
+                    return 'Please enter the appliance information';
                   }
                   return null;
                 },
               ),
               TextButton(
-                child: const Text('บันทึก'),
+                child: const Text('Save'),
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     // สร้างวัตถุ RenewableEnergy จากข้อมูลที่ผู้ใช้กรอก
                     var renewableEnergy = RenewableEnergy(
                       keyID: null,
-                      energyType: energyTypeController.text,
-                      installationArea: double.parse(installationAreaController.text),
-                      energyUsage: double.parse(energyUsageController.text),
-                      installationCost: double.parse(installationCostController.text),
-                      energySaving: double.parse(energySavingController.text),
-                      paybackPeriod: double.parse(paybackPeriodController.text),
+                      energyType: 'Renewable Energy',
+                      houseSize: double.parse(houseSizeController.text),
+                      numberOfResidents: int.parse(numberOfResidentsController.text),
+                      averageEnergyUsage: double.parse(averageEnergyUsageController.text),
+                      location: locationController.text,
+                      roofArea: double.parse(roofAreaController.text),
+                      roofDirection: roofDirectionController.text,
+                      appliances: appliancesController.text,
                     );
                     
                     // เพิ่มข้อมูลไปที่ Provider
@@ -128,7 +145,7 @@ class FormScreen extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(
                       fullscreenDialog: true,
                       builder: (context) {
-                        return MyHomePage();  // เปลี่ยนชื่อหน้าให้สอดคล้องกับโครงการของคุณ
+                        return MyHomePage();  // กลับไปยังหน้า Home
                       },
                     ));
                   }
