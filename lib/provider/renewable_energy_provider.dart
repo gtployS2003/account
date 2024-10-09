@@ -60,18 +60,19 @@ class RenewableEnergyProvider with ChangeNotifier {
   }
 
   // ฟังก์ชันวิเคราะห์และแสดงคำแนะนำพลังงานหมุนเวียนที่เหมาะสม
-  Future<void> fetchAndAnalyzeData(double lat, double lon) async {
-    try {
-      final weatherData = await fetchWeatherData(lat, lon);
-      double sunlightHours = weatherData['current']['uvi'];  // ใช้ดัชนี UV แทนปริมาณแสงแดด
-      double windSpeed = weatherData['current']['wind_speed'];
+  Future<String> fetchAndAnalyzeData(double lat, double lon) async {
+  try {
+    final weatherData = await fetchWeatherData(lat, lon);
+    double sunlightHours = weatherData['current']['uvi'];  // ใช้ดัชนี UV แทนปริมาณแสงแดด
+    double windSpeed = weatherData['current']['wind_speed'];
 
-      String recommendation = await analyzeAndRecommendEnergy(sunlightHours, windSpeed);
-      print('คำแนะนำพลังงานหมุนเวียนที่เหมาะสม: $recommendation');
-    } catch (e) {
-      print('Error fetching or analyzing data: $e');
-    }
+    String recommendation = await analyzeAndRecommendEnergy(sunlightHours, windSpeed);
+    return recommendation;
+  } catch (e) {
+    print('Error fetching or analyzing data: $e');
+    return 'เกิดข้อผิดพลาดในการแนะนำพลังงานหมุนเวียน';
   }
+}
 
   // ฟังก์ชันลบข้อมูลพลังงานหมุนเวียน
   void deleteEnergy(int? index) async {

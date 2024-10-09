@@ -22,46 +22,48 @@ class RenewableEnergyDB {
 
   // ฟังก์ชันเพิ่มข้อมูลพลังงานหมุนเวียนในฐานข้อมูล
   Future<int> insertDatabase(RenewableEnergy energy) async {
-    var db = await this.openDatabase();
-    var store = intMapStoreFactory.store('energy');
+  var db = await this.openDatabase();
+  var store = intMapStoreFactory.store('energy');
 
-    var keyID = store.add(db, {
-      "energyType": energy.energyType,
-      "houseSize": energy.houseSize,
-      "numberOfResidents": energy.numberOfResidents,
-      "averageEnergyUsage": energy.averageEnergyUsage,
-      "location": energy.location,
-      "roofArea": energy.roofArea,
-      "roofDirection": energy.roofDirection,
-      "appliances": energy.appliances,
-    });
-    db.close();
-    return keyID;
-  }
+  var keyID = store.add(db, {
+    "energyType": energy.energyType,
+    "houseSize": energy.houseSize,
+    "numberOfResidents": energy.numberOfResidents,
+    "averageEnergyUsage": energy.averageEnergyUsage,
+    "location": energy.location,
+    "roofArea": energy.roofArea,
+    "roofDirection": energy.roofDirection,
+    "appliances": energy.appliances,
+    "installationBudget": energy.installationBudget, // เพิ่มงบประมาณในการบันทึก
+  });
+  db.close();
+  return keyID;
+}
 
   // ฟังก์ชันโหลดข้อมูลพลังงานหมุนเวียนทั้งหมดจากฐานข้อมูล
   Future<List<RenewableEnergy>> loadAllData() async {
-    var db = await this.openDatabase();
-    var store = intMapStoreFactory.store('energy');
-    var snapshot = await store.find(db, finder: Finder(sortOrders: [SortOrder(Field.key, false)]));
+  var db = await this.openDatabase();
+  var store = intMapStoreFactory.store('energy');
+  var snapshot = await store.find(db, finder: Finder(sortOrders: [SortOrder(Field.key, false)]));
 
-    List<RenewableEnergy> energies = [];
-    for (var record in snapshot) {
-      energies.add(RenewableEnergy(
-        keyID: record.key,
-        energyType: record['energyType'].toString(),
-        houseSize: double.parse(record['houseSize'].toString()),
-        numberOfResidents: int.parse(record['numberOfResidents'].toString()),
-        averageEnergyUsage: double.parse(record['averageEnergyUsage'].toString()),
-        location: record['location'].toString(),
-        roofArea: double.parse(record['roofArea'].toString()),
-        roofDirection: record['roofDirection'].toString(),
-        appliances: record['appliances'].toString(),
-      ));
-    }
-    db.close();
-    return energies;
+  List<RenewableEnergy> energies = [];
+  for (var record in snapshot) {
+    energies.add(RenewableEnergy(
+      keyID: record.key,
+      energyType: record['energyType'].toString(),
+      houseSize: double.parse(record['houseSize'].toString()),
+      numberOfResidents: int.parse(record['numberOfResidents'].toString()),
+      averageEnergyUsage: double.parse(record['averageEnergyUsage'].toString()),
+      location: record['location'].toString(),
+      roofArea: double.parse(record['roofArea'].toString()),
+      roofDirection: record['roofDirection'].toString(),
+      appliances: record['appliances'].toString(),
+      installationBudget: double.parse(record['installationBudget'].toString()), // โหลดงบประมาณ
+    ));
   }
+  db.close();
+  return energies;
+}
 
   // ฟังก์ชันลบข้อมูลพลังงานหมุนเวียน
   deleteDatabase(int? index) async {

@@ -1,5 +1,6 @@
-import 'package:account/provider/renewable_energy_provider.dart';  // เปลี่ยนเป็น RenewableEnergyProvider
+import 'package:account/provider/renewable_energy_provider.dart';
 import 'package:account/screens/form_screen.dart';
+import 'package:account/screens/simulation_screen.dart'; // นำเข้า SimulationScreen ที่เราสร้างไว้
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -46,17 +47,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ListTile(
                     title: Text('Energy Type: ${energy.energyType}'),
                     subtitle: Text(
-                        'Household Size: ${energy.houseSize} sq.m.\n'
-                        'Number of Occupants: ${energy.numberOfResidents} people\n'
-                        'Average Monthly Electricity Usage: ${energy.averageEnergyUsage} kWh\n'
-                        'Location: ${energy.location}\n'
-                        'Roof Area for Installation: ${energy.roofArea} sq.m.\n'
-                        'Roof Direction: ${energy.roofDirection}\n'
-                        'Frequently Used Appliances: ${energy.appliances}'),
+                      'ขนาดบ้าน: ${energy.houseSize} ตร.ม.\n'
+                      'จำนวนผู้อยู่อาศัย: ${energy.numberOfResidents} คน\n'
+                      'การใช้ไฟฟ้าเฉลี่ยต่อเดือน: ${energy.averageEnergyUsage} kWh\n'
+                      'ตำแหน่งที่ตั้ง: ${energy.location}\n'
+                      'พื้นที่หลังคาสำหรับติดตั้ง: ${energy.roofArea} ตร.ม.\n'
+                      'ทิศทางของหลังคา: ${energy.roofDirection}\n'
+                      'เครื่องใช้ไฟฟ้าที่ใช้บ่อย: ${energy.appliances}\n'
+                      'งบประมาณที่ใช้ในการติดตั้ง: ${energy.installationBudget} บาท', // แสดงงบประมาณ
+                    ),
                     leading: CircleAvatar(
                       radius: 30,
                       child: FittedBox(
-                        child: Text('${energy.houseSize} sq.m.'),
+                        child: Text('${energy.houseSize} ตร.ม.'),
                       ),
                     ),
                     trailing: IconButton(
@@ -65,6 +68,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         provider.deleteEnergy(energy.keyID);
                       },
                     ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SimulationScreen(energy: energy),
+                          ));
+                    },
                   ),
                 );
               },
@@ -76,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
             builder: (context) {
-              return FormScreen();  // ไปที่หน้าฟอร์มเพื่อเพิ่มข้อมูล
+              return FormScreen(); // ไปที่หน้าฟอร์มเพื่อเพิ่มข้อมูล
             },
           ));
         },
