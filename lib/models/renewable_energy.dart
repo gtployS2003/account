@@ -8,7 +8,8 @@ class RenewableEnergy {
   final double roofArea;
   final String roofDirection;
   final String appliances;
-  final double installationBudget; // เพิ่มฟิลด์งบประมาณ
+  final double installationBudget;
+
 
   RenewableEnergy({
     this.keyID,

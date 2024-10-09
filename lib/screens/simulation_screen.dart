@@ -8,9 +8,19 @@ class SimulationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double budgetPerSqM = 5000;
+    double budgetPerSqM = 3000;
     double installationCost = calculateInstallationCost(energy.roofArea, budgetPerSqM);
-    double energyProduced = energy.roofArea * 10; // สมมติว่าแผงโซลาร์เซลล์ผลิต 10 kWh ต่อ ตร.ม.
+    
+    // ปรับปรุงการคำนวณ energyProduced โดยใช้ข้อมูลจริง
+    double panelEfficiency = 0.18; // ประสิทธิภาพของแผงโซลาร์เซลล์ 18%
+    double sunlightHoursPerDay = 4.5; // จำนวนชั่วโมงแสงอาทิตย์เฉลี่ยต่อวัน
+    double irradiance = 1.0; // ค่าความเข้มข้นของแสงอาทิตย์เป็น kW/m^2
+
+    // คำนวณพลังงานที่ผลิตได้ต่อวันและต่อเดือนจากแผงโซลาร์เซลล์
+    double energyProducedPerSqMPerDay = panelEfficiency * irradiance * sunlightHoursPerDay; 
+    double energyProducedPerSqMPerMonth = energyProducedPerSqMPerDay * 30; // เปลี่ยนจากวันเป็นเดือน
+    double energyProduced = energy.roofArea * energyProducedPerSqMPerMonth; // พลังงานที่ผลิตได้จากขนาดหลังคา
+
     double monthlySavings = calculateMonthlySavings(energy.averageEnergyUsage, energyProduced);
     double paybackPeriod = calculatePaybackPeriod(installationCost, monthlySavings);
 
@@ -75,12 +85,14 @@ class SimulationScreen extends StatelessWidget {
               ),
             ),
             Text(
-              paybackPeriod.isInfinite || paybackPeriod < 0
-                  ? '- ไม่คุ้มค่าในการลงทุน'
+              paybackPeriod.isInfinite || paybackPeriod > 10
+                  ? '- ไม่คุ้มค่าในการลงทุน ระยะเวลาคืนทุน: ${paybackPeriod.toStringAsFixed(1)} ปี'
                   : '- คุ้มค่าในการลงทุน ระยะเวลาคืนทุน: ${paybackPeriod.toStringAsFixed(1)} ปี',
               style: TextStyle(
                 fontSize: 18,
-                color: paybackPeriod.isInfinite || paybackPeriod < 0 ? Colors.red : Colors.green,
+                color: paybackPeriod.isInfinite || paybackPeriod > 10
+                    ? Colors.red
+                    : Colors.green,
               ),
             ),
           ],

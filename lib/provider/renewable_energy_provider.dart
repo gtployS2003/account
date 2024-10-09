@@ -6,6 +6,13 @@ import 'dart:convert';
 
 class RenewableEnergyProvider with ChangeNotifier {
   List<RenewableEnergy> energies = [];
+  double _sunlightHours = 0.0; // เพิ่มฟิลด์นี้
+  double _windSpeed = 0.0; // เพิ่มฟิลด์นี้
+
+  // สร้าง getter สำหรับ sunlightHours และ windSpeed
+  double get sunlightHours => _sunlightHours;
+  double get windSpeed => _windSpeed;
+
 
   // ฟังก์ชันสำหรับดึงข้อมูลพลังงานหมุนเวียนทั้งหมด
   List<RenewableEnergy> getEnergies() {
@@ -31,20 +38,21 @@ class RenewableEnergyProvider with ChangeNotifier {
 
   // ฟังก์ชันสำหรับดึงข้อมูลสภาพอากาศจาก API
   Future<Map<String, dynamic>> fetchWeatherData(double lat, double lon) async {
-  final apiKey = 'f14cd842fcff44e359e0d20dc5ccf46f'; 
-  final url =
-      'https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lon&exclude=minutely,hourly&appid=$apiKey&units=metric';
+    final apiKey = 'f14cd842fcff44e359e0d20dc5ccf46f';
+    final url =
+        'https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lon&exclude=minutely,hourly&appid=$apiKey&units=metric';
 
-  final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url));
 
-  if (response.statusCode == 200) {
-    print('Weather data: ${response.body}');  // เพิ่มบรรทัดนี้เพื่อตรวจสอบข้อมูลที่ได้รับ
-    return json.decode(response.body);
-  } else {
-    print('Failed to load weather data: ${response.statusCode}');
-    throw Exception('Failed to load weather data');
+    if (response.statusCode == 200) {
+      print(
+          'Weather data: ${response.body}'); // เพิ่มบรรทัดนี้เพื่อตรวจสอบข้อมูลที่ได้รับ
+      return json.decode(response.body);
+    } else {
+      print('Failed to load weather data: ${response.statusCode}');
+      throw Exception('Failed to load weather data');
+    }
   }
-}
 
   // ฟังก์ชันวิเคราะห์ข้อมูลบ้านเพื่อแนะนำพลังงานหมุนเวียนที่เหมาะสม
   Future<String> analyzeAndRecommendEnergy({
@@ -85,43 +93,44 @@ class RenewableEnergyProvider with ChangeNotifier {
 
   // ฟังก์ชันวิเคราะห์และแสดงคำแนะนำพลังงานหมุนเวียนที่เหมาะสม
   Future<String> fetchAndAnalyzeData({
-  required double lat,
-  required double lon,
-  required double averageEnergyUsage,
-  required double roofArea,
-  required String roofDirection,
-}) async {
-  try {
-    final weatherData = await fetchWeatherData(lat, lon);
+    required double lat,
+    required double lon,
+    required double averageEnergyUsage,
+    required double roofArea,
+    required String roofDirection,
+  }) async {
+    try {
+      final weatherData = await fetchWeatherData(lat, lon);
 
-    // ตรวจสอบค่าที่ได้รับไม่เป็น null หรือผิดพลาด
-    double sunlightHours = (weatherData['current']['uvi'] ?? 0).toDouble();
-    double windSpeed = (weatherData['current']['wind_speed'] ?? 0).toDouble();
+      double sunlightHours = (weatherData['current']['uvi'] ?? 0).toDouble();
+      double windSpeed = (weatherData['current']['wind_speed'] ?? 0).toDouble();
 
-    // พิมพ์ค่าที่ได้รับเพื่อตรวจสอบ
-    print('Sunlight Hours: $sunlightHours');
-    print('Wind Speed: $windSpeed');
+      print('Sunlight Hours: $sunlightHours');
+      print('Wind Speed: $windSpeed');
 
-    if (sunlightHours.isNaN || sunlightHours.isInfinite) {
-      sunlightHours = 0.0; // กำหนดค่าเริ่มต้นที่เหมาะสม
+      if (sunlightHours.isNaN || sunlightHours.isInfinite) {
+        sunlightHours = 0.0;
+      }
+      if (windSpeed.isNaN || windSpeed.isInfinite) {
+        windSpeed = 0.0;
+      }
+
+      // วิเคราะห์และแนะนำพลังงาน
+      String recommendation = await analyzeAndRecommendEnergy(
+        sunlightHours: sunlightHours,
+        windSpeed: windSpeed,
+        averageEnergyUsage: averageEnergyUsage,
+        roofArea: roofArea,
+        roofDirection: roofDirection,
+      );
+
+      // เก็บค่า sunlightHours และ windSpeed เพื่อใช้ในส่วนอื่น
+      return recommendation;
+    } catch (e) {
+      print('Error fetching or analyzing data: $e');
+      return 'เกิดข้อผิดพลาดในการแนะนำพลังงานหมุนเวียน';
     }
-    if (windSpeed.isNaN || windSpeed.isInfinite) {
-      windSpeed = 0.0; // กำหนดค่าเริ่มต้นที่เหมาะสม
-    }
-
-    String recommendation = await analyzeAndRecommendEnergy(
-      sunlightHours: sunlightHours,
-      windSpeed: windSpeed,
-      averageEnergyUsage: averageEnergyUsage,
-      roofArea: roofArea,
-      roofDirection: roofDirection,
-    );
-    return recommendation;
-  } catch (e) {
-    print('Error fetching or analyzing data: $e');
-    return 'เกิดข้อผิดพลาดในการแนะนำพลังงานหมุนเวียน';
   }
-}
 
   // ฟังก์ชันลบข้อมูลพลังงานหมุนเวียน
   void deleteEnergy(int? index) async {
