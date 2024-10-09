@@ -177,10 +177,18 @@ class FormScreen extends StatelessWidget {
                         listen: false);
                     double lat = double.parse(latitudeController.text);
                     double lon = double.parse(longitudeController.text);
+                    double roofArea = double.parse(roofAreaController.text);
+                    String roofDirection = roofDirectionController.text;
 
                     // เรียกใช้ฟังก์ชันและใช้ค่าที่ได้
-                    String recommendation =
-                        await provider.fetchAndAnalyzeData(lat, lon);
+                    String recommendation = await provider.fetchAndAnalyzeData(
+                      lat: double.parse(latitudeController.text),
+                      lon: double.parse(longitudeController.text),
+                      averageEnergyUsage:
+                          double.parse(averageEnergyUsageController.text),
+                      roofArea: double.parse(roofAreaController.text),
+                      roofDirection: roofDirectionController.text,
+                    );
 
                     // สร้างวัตถุ RenewableEnergy จากข้อมูลที่ผู้ใช้กรอกและคำแนะนำ
                     var renewableEnergy = RenewableEnergy(
@@ -198,7 +206,7 @@ class FormScreen extends StatelessWidget {
                       appliances: appliancesController.text,
                       installationBudget: double.parse(
                           installationBudgetController
-                              .text), // เพิ่มงบประมาณที่ผู้ใช้กรอก
+                              .text), // เพิ่มพารามิเตอร์นี้
                     );
 
                     provider.addEnergy(renewableEnergy);
@@ -208,7 +216,7 @@ class FormScreen extends StatelessWidget {
                       MaterialPageRoute(
                         fullscreenDialog: true,
                         builder: (context) {
-                          return MyHomePage(); // กลับไปยังหน้า Home
+                          return MyHomePage();
                         },
                       ),
                     );
