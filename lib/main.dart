@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData(
           fontFamily: 'Sarabun',  // ใช้ฟอนต์ Sarabun ที่รองรับภาษาไทย
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           useMaterial3: true,
         ),
         locale: const Locale('th', 'TH'),  // กำหนดค่า locale ให้รองรับภาษาไทย

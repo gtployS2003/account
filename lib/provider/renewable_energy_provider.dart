@@ -31,18 +31,20 @@ class RenewableEnergyProvider with ChangeNotifier {
 
   // ฟังก์ชันสำหรับดึงข้อมูลสภาพอากาศจาก API
   Future<Map<String, dynamic>> fetchWeatherData(double lat, double lon) async {
-    final apiKey = 'f14cd842fcff44e359e0d20dc5ccf46f'; 
-    final url =
-        'https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lon&exclude=minutely,hourly&appid=$apiKey&units=metric';
+  final apiKey = 'f14cd842fcff44e359e0d20dc5ccf46f'; 
+  final url =
+      'https://api.openweathermap.org/data/3.0/onecall?lat=$lat&lon=$lon&exclude=minutely,hourly&appid=$apiKey&units=metric';
 
-    final response = await http.get(Uri.parse(url));
+  final response = await http.get(Uri.parse(url));
 
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Failed to load weather data');
-    }
+  if (response.statusCode == 200) {
+    print('Weather data: ${response.body}');  // เพิ่มบรรทัดนี้เพื่อตรวจสอบข้อมูลที่ได้รับ
+    return json.decode(response.body);
+  } else {
+    print('Failed to load weather data: ${response.statusCode}');
+    throw Exception('Failed to load weather data');
   }
+}
 
   // ฟังก์ชันวิเคราะห์ข้อมูลบ้านเพื่อแนะนำพลังงานหมุนเวียนที่เหมาะสม
   Future<String> analyzeAndRecommendEnergy({
@@ -91,8 +93,21 @@ class RenewableEnergyProvider with ChangeNotifier {
 }) async {
   try {
     final weatherData = await fetchWeatherData(lat, lon);
-    double sunlightHours = weatherData['current']['uvi']; // ใช้ดัชนี UV แทนปริมาณแสงแดด
-    double windSpeed = weatherData['current']['wind_speed'];
+
+    // ตรวจสอบค่าที่ได้รับไม่เป็น null หรือผิดพลาด
+    double sunlightHours = (weatherData['current']['uvi'] ?? 0).toDouble();
+    double windSpeed = (weatherData['current']['wind_speed'] ?? 0).toDouble();
+
+    // พิมพ์ค่าที่ได้รับเพื่อตรวจสอบ
+    print('Sunlight Hours: $sunlightHours');
+    print('Wind Speed: $windSpeed');
+
+    if (sunlightHours.isNaN || sunlightHours.isInfinite) {
+      sunlightHours = 0.0; // กำหนดค่าเริ่มต้นที่เหมาะสม
+    }
+    if (windSpeed.isNaN || windSpeed.isInfinite) {
+      windSpeed = 0.0; // กำหนดค่าเริ่มต้นที่เหมาะสม
+    }
 
     String recommendation = await analyzeAndRecommendEnergy(
       sunlightHours: sunlightHours,
