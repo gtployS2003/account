@@ -13,7 +13,6 @@ class RenewableEnergyProvider with ChangeNotifier {
   double get sunlightHours => _sunlightHours;
   double get windSpeed => _windSpeed;
 
-
   // ฟังก์ชันสำหรับดึงข้อมูลพลังงานหมุนเวียนทั้งหมด
   List<RenewableEnergy> getEnergies() {
     return energies;
@@ -32,7 +31,7 @@ class RenewableEnergyProvider with ChangeNotifier {
     var keyID = await db.insertDatabase(energy);
     if (keyID != null) {
       this.energies = await db.loadAllData();
-      notifyListeners();
+      notifyListeners(); // ตรวจสอบว่า notifyListeners() ถูกเรียกใช้หลังจากโหลดข้อมูล
     }
   }
 
@@ -108,12 +107,9 @@ class RenewableEnergyProvider with ChangeNotifier {
       print('Sunlight Hours: $sunlightHours');
       print('Wind Speed: $windSpeed');
 
-      if (sunlightHours.isNaN || sunlightHours.isInfinite) {
-        sunlightHours = 0.0;
-      }
-      if (windSpeed.isNaN || windSpeed.isInfinite) {
-        windSpeed = 0.0;
-      }
+      // ปรับแก้ไขเพื่อจัดการกับค่า NaN และ Infinite
+      sunlightHours = sunlightHours.isFinite ? sunlightHours : 0.0;
+      windSpeed = windSpeed.isFinite ? windSpeed : 0.0;
 
       // วิเคราะห์และแนะนำพลังงาน
       String recommendation = await analyzeAndRecommendEnergy(
@@ -124,7 +120,6 @@ class RenewableEnergyProvider with ChangeNotifier {
         roofDirection: roofDirection,
       );
 
-      // เก็บค่า sunlightHours และ windSpeed เพื่อใช้ในส่วนอื่น
       return recommendation;
     } catch (e) {
       print('Error fetching or analyzing data: $e');

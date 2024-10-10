@@ -204,9 +204,12 @@ class FormScreen extends StatelessWidget {
                       roofArea: double.parse(roofAreaController.text),
                       roofDirection: roofDirectionController.text,
                       appliances: appliancesController.text,
-                      installationBudget: double.parse(
-                          installationBudgetController
-                              .text), // เพิ่มพารามิเตอร์นี้
+                      installationBudget:
+                          double.parse(installationBudgetController.text),
+                      sunlightHours: provider
+                          .sunlightHours, // ใช้ค่า sunlightHours จาก provider
+                      windSpeed:
+                          provider.windSpeed, // ใช้ค่า windSpeed จาก provider
                     );
 
                     provider.addEnergy(renewableEnergy);

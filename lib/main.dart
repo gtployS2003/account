@@ -50,13 +50,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
-  void initState() {
-    // โหลดข้อมูลพลังงานหมุนเวียน
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<RenewableEnergyProvider>(context, listen: false).initData();  // เปลี่ยนเป็น RenewableEnergyProvider
-    });
-  }
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    Provider.of<RenewableEnergyProvider>(context, listen: false).initData();
+  });
+}
 
   @override
   Widget build(BuildContext context) {

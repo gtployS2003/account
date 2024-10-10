@@ -32,10 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, provider, Widget? child) {
           // ตรวจสอบว่ามีรายการพลังงานหมุนเวียนหรือไม่
           if (provider.energies.isEmpty) {
+            print('No items available');
             return const Center(
               child: Text('No items available'),
             );
           } else {
+            print('Items found: ${provider.energies.length}');
             return ListView.builder(
               itemCount: provider.energies.length,
               itemBuilder: (context, index) {
