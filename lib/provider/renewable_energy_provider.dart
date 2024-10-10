@@ -155,4 +155,12 @@ class RenewableEnergyProvider with ChangeNotifier {
     this.energies = await db.loadAllData();
     notifyListeners();
   }
+
+  void updateEnergy(RenewableEnergy updatedEnergy) {
+  int index = energies.indexWhere((e) => e.keyID == updatedEnergy.keyID);
+  if (index != -1) {
+    energies[index] = updatedEnergy;
+    notifyListeners();
+  }
+}
 }

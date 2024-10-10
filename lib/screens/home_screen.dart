@@ -4,6 +4,7 @@ import 'package:account/screens/simulation_screen.dart'; // นำเข้า S
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:account/screens/edit_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -46,7 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 var energy = provider.energies[index];
                 return Card(
                   elevation: 5,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -64,14 +66,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildDetailRow('ขนาดบ้าน', '${energy.houseSize} ตร.ม.'),
-                          _buildDetailRow('ผู้อยู่อาศัย', '${energy.numberOfResidents} คน'),
-                          _buildDetailRow('ใช้ไฟฟ้าเฉลี่ยต่อเดือน', '${energy.averageEnergyUsage} kWh'),
+                          _buildDetailRow(
+                              'ขนาดบ้าน', '${energy.houseSize} ตร.ม.'),
+                          _buildDetailRow(
+                              'ผู้อยู่อาศัย', '${energy.numberOfResidents} คน'),
+                          _buildDetailRow('ใช้ไฟฟ้าเฉลี่ยต่อเดือน',
+                              '${energy.averageEnergyUsage} kWh'),
                           _buildDetailRow('ที่ตั้ง', energy.location),
-                          _buildDetailRow('พื้นที่ติดตั้งหลังคา', '${energy.roofArea} ตร.ม.'),
+                          _buildDetailRow('พื้นที่ติดตั้งหลังคา',
+                              '${energy.roofArea} ตร.ม.'),
                           _buildDetailRow('ทิศทางหลังคา', energy.roofDirection),
                           _buildDetailRow('เครื่องใช้ไฟฟ้า', energy.appliances),
-                          _buildDetailRow('งบประมาณ', '${energy.installationBudget} บาท'),
+                          _buildDetailRow(
+                              'งบประมาณ', '${energy.installationBudget} บาท'),
                         ],
                       ),
                     ),
@@ -91,14 +98,28 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {
-                        provider.deleteEnergy(energy.keyID);
-                      },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditScreen(energy: energy),
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            provider.deleteEnergy(energy.keyID);
+                          },
+                        ),
+                      ],
                     ),
                     onTap: () {
                       Navigator.push(
