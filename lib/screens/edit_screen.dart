@@ -60,42 +60,78 @@ class _EditScreenState extends State<EditScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                TextFormField(
-                  decoration:
-                      const InputDecoration(labelText: 'ขนาดบ้าน (ตร.ม.)'),
-                  keyboardType: TextInputType.number,
+                _buildInputCard(
+                  context,
+                  title: 'ขนาดบ้าน (ตร.ม.)',
                   controller: houseSizeController,
-                  validator: (String? input) {
-                    if (input == null ||
-                        input.isEmpty ||
-                        double.tryParse(input) == null) {
-                      return 'กรุณากรอกข้อมูลที่ถูกต้อง';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  decoration:
-                      const InputDecoration(labelText: 'จำนวนผู้อยู่อาศัย'),
                   keyboardType: TextInputType.number,
+                  hintText: 'กรอกขนาดบ้าน',
+                  validator: _validateNumber,
+                ),
+                _buildInputCard(
+                  context,
+                  title: 'จำนวนผู้อยู่อาศัย',
                   controller: numberOfResidentsController,
-                  validator: (String? input) {
-                    if (input == null ||
-                        input.isEmpty ||
-                        int.tryParse(input) == null) {
-                      return 'กรุณากรอกข้อมูลที่ถูกต้อง';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'การใช้ไฟฟ้าเฉลี่ยต่อเดือน (kWh)',
-                  ),
                   keyboardType: TextInputType.number,
-                  controller: averageEnergyUsageController,
+                  hintText: 'กรอกจำนวนผู้อยู่อาศัย',
+                  validator: _validateNumber,
                 ),
-                // เพิ่มฟิลด์อื่นๆ เช่น latitude, longitude, roofArea, roofDirection ฯลฯ
+                _buildInputCard(
+                  context,
+                  title: 'การใช้ไฟฟ้าเฉลี่ยต่อเดือน (kWh)',
+                  controller: averageEnergyUsageController,
+                  keyboardType: TextInputType.number,
+                  hintText: 'กรอกค่าไฟฟ้าเฉลี่ยต่อเดือน',
+                  validator: _validateNumber,
+                ),
+                _buildInputCard(
+                  context,
+                  title: 'ละติจูด (Lat)',
+                  controller: latitudeController,
+                  keyboardType: TextInputType.number,
+                  hintText: 'กรอกละติจูด',
+                  validator: _validateCoordinate,
+                ),
+                _buildInputCard(
+                  context,
+                  title: 'ลองจิจูด (Lon)',
+                  controller: longitudeController,
+                  keyboardType: TextInputType.number,
+                  hintText: 'กรอกลองจิจูด',
+                  validator: _validateCoordinate,
+                ),
+                _buildInputCard(
+                  context,
+                  title: 'พื้นที่หลังคาสำหรับติดตั้ง (ตร.ม.)',
+                  controller: roofAreaController,
+                  keyboardType: TextInputType.number,
+                  hintText: 'กรอกพื้นที่หลังคา',
+                  validator: _validateNumber,
+                ),
+                _buildInputCard(
+                  context,
+                  title: 'ทิศทางของหลังคา',
+                  controller: roofDirectionController,
+                  keyboardType: TextInputType.text,
+                  hintText: 'เช่น เหนือ ใต้ ออก ตก',
+                  validator: _validateText,
+                ),
+                _buildInputCard(
+                  context,
+                  title: 'เครื่องใช้ไฟฟ้าที่ใช้บ่อย',
+                  controller: appliancesController,
+                  keyboardType: TextInputType.text,
+                  hintText: 'เช่น แอร์, ทีวี, ตู้เย็น',
+                  validator: _validateText,
+                ),
+                _buildInputCard(
+                  context,
+                  title: 'งบประมาณในการติดตั้ง (บาท)',
+                  controller: installationBudgetController,
+                  keyboardType: TextInputType.number,
+                  hintText: 'กรอกงบประมาณ',
+                  validator: _validateNumber,
+                ),
                 ElevatedButton(
                   child: const Text('Save Changes'),
                   onPressed: () {
@@ -134,5 +170,70 @@ class _EditScreenState extends State<EditScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildInputCard(
+    BuildContext context, {
+    required String title,
+    required TextEditingController controller,
+    required TextInputType keyboardType,
+    required String hintText,
+    required String? Function(String?) validator,
+  }) {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: controller,
+              keyboardType: keyboardType,
+              decoration: InputDecoration(
+                hintText: hintText,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              validator: validator,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String? _validateNumber(String? input) {
+    if (input == null || input.isEmpty || double.tryParse(input) == null) {
+      return 'กรุณากรอกข้อมูลที่ถูกต้อง';
+    }
+    return null;
+  }
+
+  String? _validateCoordinate(String? input) {
+    if (input == null || input.isEmpty || double.tryParse(input) == null) {
+      return 'กรุณากรอกละติจูด/ลองจิจูดที่ถูกต้อง';
+    }
+    return null;
+  }
+
+  String? _validateText(String? input) {
+    if (input == null || input.isEmpty) {
+      return 'กรุณากรอกข้อมูล';
+    }
+    return null;
   }
 }

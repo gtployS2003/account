@@ -1,6 +1,6 @@
 import 'package:account/provider/renewable_energy_provider.dart';
 import 'package:account/screens/form_screen.dart';
-import 'package:account/screens/simulation_screen.dart'; // นำเข้า SimulationScreen ที่เราสร้างไว้
+import 'package:account/screens/simulation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Consumer<RenewableEnergyProvider>(
         builder: (context, provider, Widget? child) {
           if (provider.energies.isEmpty) {
-            print('No items available');
             return const Center(
               child: Text(
                 'ไม่มีข้อมูลพลังงาน',
@@ -40,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             );
           } else {
-            print('Items found: ${provider.energies.length}');
             return ListView.builder(
               itemCount: provider.energies.length,
               itemBuilder: (context, index) {
@@ -85,40 +83,40 @@ class _HomeScreenState extends State<HomeScreen> {
                     leading: CircleAvatar(
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       radius: 30,
-                      child: FittedBox(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            '${energy.houseSize} ตร.ม.',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                      child: const Icon(
+                        Icons.home,
+                        color: Colors.white,
+                        size: 30,
                       ),
                     ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                    trailing: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    EditScreen(energy: energy),
-                              ),
-                            );
-                          },
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.blue),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditScreen(energy: energy),
+                                  ),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                provider.deleteEnergy(energy.keyID);
+                              },
+                            ),
+                          ],
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () {
-                            provider.deleteEnergy(energy.keyID);
-                          },
-                        ),
+                        const SizedBox(
+                            height: 8), // เพิ่มระยะห่างจากด้านล่างของปุ่ม
                       ],
                     ),
                     onTap: () {
@@ -155,17 +153,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '$label: ',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
           ),
-          Flexible(
+          Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 10),
+              maxLines: 3, // ให้ข้อความแสดงได้สูงสุด 3 บรรทัด
               overflow: TextOverflow.ellipsis,
-              maxLines: 1,
             ),
           ),
         ],
