@@ -91,41 +91,51 @@ class RenewableEnergyProvider with ChangeNotifier {
   }
 
   // ฟังก์ชันวิเคราะห์และแสดงคำแนะนำพลังงานหมุนเวียนที่เหมาะสม
-  Future<String> fetchAndAnalyzeData({
-    required double lat,
-    required double lon,
-    required double averageEnergyUsage,
-    required double roofArea,
-    required String roofDirection,
-  }) async {
-    try {
-      final weatherData = await fetchWeatherData(lat, lon);
+  Future<Map<String, dynamic>> fetchAndAnalyzeData({
+  required double lat,
+  required double lon,
+  required double averageEnergyUsage,
+  required double roofArea,
+  required String roofDirection,
+}) async {
+  try {
+    final weatherData = await fetchWeatherData(lat, lon);
+    print('Weather data: ${weatherData.toString()}');
 
-      double sunlightHours = (weatherData['current']['uvi'] ?? 0).toDouble();
-      double windSpeed = (weatherData['current']['wind_speed'] ?? 0).toDouble();
+    double sunlightHours = (weatherData['current']['uvi'] ?? 0).toDouble();
+    double windSpeed = (weatherData['current']['wind_speed'] ?? 0).toDouble();
 
-      print('Sunlight Hours: $sunlightHours');
-      print('Wind Speed: $windSpeed');
+    print('Before adjustment - Sunlight Hours: $sunlightHours');
+    print('Before adjustment - Wind Speed: $windSpeed');
 
-      // ปรับแก้ไขเพื่อจัดการกับค่า NaN และ Infinite
-      sunlightHours = sunlightHours.isFinite ? sunlightHours : 0.0;
-      windSpeed = windSpeed.isFinite ? windSpeed : 0.0;
+    sunlightHours = sunlightHours.isFinite ? sunlightHours : 0.0;
+    windSpeed = windSpeed.isFinite ? windSpeed : 0.0;
 
-      // วิเคราะห์และแนะนำพลังงาน
-      String recommendation = await analyzeAndRecommendEnergy(
-        sunlightHours: sunlightHours,
-        windSpeed: windSpeed,
-        averageEnergyUsage: averageEnergyUsage,
-        roofArea: roofArea,
-        roofDirection: roofDirection,
-      );
+    print('After adjustment - Sunlight Hours: $sunlightHours');
+    print('After adjustment - Wind Speed: $windSpeed');
 
-      return recommendation;
-    } catch (e) {
-      print('Error fetching or analyzing data: $e');
-      return 'เกิดข้อผิดพลาดในการแนะนำพลังงานหมุนเวียน';
-    }
+    String recommendation = await analyzeAndRecommendEnergy(
+      sunlightHours: sunlightHours,
+      windSpeed: windSpeed,
+      averageEnergyUsage: averageEnergyUsage,
+      roofArea: roofArea,
+      roofDirection: roofDirection,
+    );
+
+    return {
+      'recommendation': recommendation,
+      'sunlightHours': sunlightHours,
+      'windSpeed': windSpeed,
+    };
+  } catch (e) {
+    print('Error fetching or analyzing data: $e');
+    return {
+      'recommendation': 'เกิดข้อผิดพลาดในการแนะนำพลังงานหมุนเวียน',
+      'sunlightHours': 0.0,
+      'windSpeed': 0.0,
+    };
   }
+}
 
   // ฟังก์ชันลบข้อมูลพลังงานหมุนเวียน
   void deleteEnergy(int? index) async {

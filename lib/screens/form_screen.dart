@@ -175,20 +175,25 @@ class FormScreen extends StatelessWidget {
                   if (formKey.currentState!.validate()) {
                     var provider = Provider.of<RenewableEnergyProvider>(context,
                         listen: false);
+
                     double lat = double.parse(latitudeController.text);
                     double lon = double.parse(longitudeController.text);
                     double roofArea = double.parse(roofAreaController.text);
                     String roofDirection = roofDirectionController.text;
 
                     // เรียกใช้ฟังก์ชันและใช้ค่าที่ได้
-                    String recommendation = await provider.fetchAndAnalyzeData(
-                      lat: double.parse(latitudeController.text),
-                      lon: double.parse(longitudeController.text),
+                    var analysisResult = await provider.fetchAndAnalyzeData(
+                      lat: lat,
+                      lon: lon,
                       averageEnergyUsage:
                           double.parse(averageEnergyUsageController.text),
-                      roofArea: double.parse(roofAreaController.text),
-                      roofDirection: roofDirectionController.text,
+                      roofArea: roofArea,
+                      roofDirection: roofDirection,
                     );
+
+                    String recommendation = analysisResult['recommendation'];
+                    double sunlightHours = analysisResult['sunlightHours'];
+                    double windSpeed = analysisResult['windSpeed'];
 
                     // สร้างวัตถุ RenewableEnergy จากข้อมูลที่ผู้ใช้กรอกและคำแนะนำ
                     var renewableEnergy = RenewableEnergy(
@@ -200,16 +205,14 @@ class FormScreen extends StatelessWidget {
                       averageEnergyUsage:
                           double.parse(averageEnergyUsageController.text),
                       location:
-                          'Lat: ${latitudeController.text}, Lon: ${longitudeController.text}',
-                      roofArea: double.parse(roofAreaController.text),
-                      roofDirection: roofDirectionController.text,
+                          'Lat: ${lat.toString()}, Lon: ${lon.toString()}',
+                      roofArea: roofArea,
+                      roofDirection: roofDirection,
                       appliances: appliancesController.text,
                       installationBudget:
                           double.parse(installationBudgetController.text),
-                      sunlightHours: provider
-                          .sunlightHours, // ใช้ค่า sunlightHours จาก provider
-                      windSpeed:
-                          provider.windSpeed, // ใช้ค่า windSpeed จาก provider
+                      sunlightHours: sunlightHours,
+                      windSpeed: windSpeed,
                     );
 
                     provider.addEnergy(renewableEnergy);
