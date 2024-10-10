@@ -30,11 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Consumer<RenewableEnergyProvider>(
         builder: (context, provider, Widget? child) {
-          // ตรวจสอบว่ามีรายการพลังงานหมุนเวียนหรือไม่
           if (provider.energies.isEmpty) {
             print('No items available');
             return const Center(
-              child: Text('No items available'),
+              child: Text(
+                'ไม่มีข้อมูลพลังงาน',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
             );
           } else {
             print('Items found: ${provider.energies.length}');
@@ -44,39 +46,68 @@ class _HomeScreenState extends State<HomeScreen> {
                 var energy = provider.energies[index];
                 return Card(
                   elevation: 5,
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   child: ListTile(
-                    title: Text('Energy Type: ${energy.energyType}'),
-                    subtitle: Text(
-                      'ขนาดบ้าน: ${energy.houseSize} ตร.ม.\n'
-                      'จำนวนผู้อยู่อาศัย: ${energy.numberOfResidents} คน\n'
-                      'การใช้ไฟฟ้าเฉลี่ยต่อเดือน: ${energy.averageEnergyUsage} kWh\n'
-                      'ตำแหน่งที่ตั้ง: ${energy.location}\n'
-                      'พื้นที่หลังคาสำหรับติดตั้ง: ${energy.roofArea} ตร.ม.\n'
-                      'ทิศทางของหลังคา: ${energy.roofDirection}\n'
-                      'เครื่องใช้ไฟฟ้าที่ใช้บ่อย: ${energy.appliances}\n'
-                      'งบประมาณที่ใช้ในการติดตั้ง: ${energy.installationBudget} บาท', // แสดงงบประมาณ
+                    contentPadding: const EdgeInsets.all(16.0),
+                    title: Text(
+                      'ประเภทพลังงาน: ${energy.energyType}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildDetailRow('ขนาดบ้าน', '${energy.houseSize} ตร.ม.'),
+                          _buildDetailRow('ผู้อยู่อาศัย', '${energy.numberOfResidents} คน'),
+                          _buildDetailRow('ใช้ไฟฟ้าเฉลี่ยต่อเดือน', '${energy.averageEnergyUsage} kWh'),
+                          _buildDetailRow('ที่ตั้ง', energy.location),
+                          _buildDetailRow('พื้นที่ติดตั้งหลังคา', '${energy.roofArea} ตร.ม.'),
+                          _buildDetailRow('ทิศทางหลังคา', energy.roofDirection),
+                          _buildDetailRow('เครื่องใช้ไฟฟ้า', energy.appliances),
+                          _buildDetailRow('งบประมาณ', '${energy.installationBudget} บาท'),
+                        ],
+                      ),
                     ),
                     leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       radius: 30,
                       child: FittedBox(
-                        child: Text('${energy.houseSize} ตร.ม.'),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            '${energy.houseSize} ตร.ม.',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.delete),
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
                       onPressed: () {
                         provider.deleteEnergy(energy.keyID);
                       },
                     ),
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SimulationScreen(energy: energy),
-                          ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SimulationScreen(energy: energy),
+                        ),
+                      );
                     },
                   ),
                 );
@@ -86,14 +117,37 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
             builder: (context) {
-              return FormScreen(); // ไปที่หน้าฟอร์มเพื่อเพิ่มข้อมูล
+              return FormScreen();
             },
           ));
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        children: [
+          Text(
+            '$label: ',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
+          Flexible(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 14),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        ],
       ),
     );
   }

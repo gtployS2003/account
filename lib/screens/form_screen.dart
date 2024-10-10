@@ -12,8 +12,8 @@ class FormScreen extends StatelessWidget {
   final houseSizeController = TextEditingController();
   final numberOfResidentsController = TextEditingController();
   final averageEnergyUsageController = TextEditingController();
-  final latitudeController = TextEditingController(); // เพิ่มตัวควบคุมละติจูด
-  final longitudeController = TextEditingController(); // เพิ่มตัวควบคุมลองจิจูด
+  final latitudeController = TextEditingController();
+  final longitudeController = TextEditingController();
   final roofAreaController = TextEditingController();
   final roofDirectionController = TextEditingController();
   final appliancesController = TextEditingController();
@@ -23,165 +23,100 @@ class FormScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Renewable Energy Data Form'),
+        title: const Text('กรอกข้อมูลพลังงานหมุนเวียน'),
       ),
       body: Form(
         key: formKey,
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'ขนาดบ้าน (ตร.ม.)',
-                ),
-                keyboardType: TextInputType.number,
+              _buildInputCard(
+                context,
+                title: 'ขนาดบ้าน (ตร.ม.)',
                 controller: houseSizeController,
-                validator: (String? input) {
-                  if (input == null ||
-                      input.isEmpty ||
-                      double.tryParse(input) == null ||
-                      double.parse(input) < 0) {
-                    return 'กรุณากรอกข้อมูลที่ถูกต้อง';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'จำนวนผู้อยู่อาศัย',
-                ),
                 keyboardType: TextInputType.number,
+                hintText: 'กรอกขนาดบ้าน',
+                validator: _validateNumber,
+              ),
+              _buildInputCard(
+                context,
+                title: 'จำนวนผู้อยู่อาศัย',
                 controller: numberOfResidentsController,
-                validator: (String? input) {
-                  if (input == null ||
-                      input.isEmpty ||
-                      int.tryParse(input) == null ||
-                      int.parse(input) <= 0) {
-                    return 'กรุณากรอกจำนวนที่ถูกต้อง';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'การใช้ไฟฟ้าเฉลี่ยต่อเดือน (kWh)',
-                ),
                 keyboardType: TextInputType.number,
+                hintText: 'กรอกจำนวนผู้อยู่อาศัย',
+                validator: _validateNumber,
+              ),
+              _buildInputCard(
+                context,
+                title: 'การใช้ไฟฟ้าเฉลี่ยต่อเดือน (kWh)',
                 controller: averageEnergyUsageController,
-                validator: (String? input) {
-                  if (input == null ||
-                      input.isEmpty ||
-                      double.tryParse(input) == null ||
-                      double.parse(input) < 0) {
-                    return 'กรุณากรอกข้อมูลที่ถูกต้อง';
-                  }
-                  return null;
-                },
-              ),
-// ฟิลด์สำหรับกรอกละติจูด
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'ละติจูด (Lat)',
-                ),
                 keyboardType: TextInputType.number,
+                hintText: 'กรอกค่าไฟฟ้าเฉลี่ยต่อเดือน',
+                validator: _validateNumber,
+              ),
+              _buildInputCard(
+                context,
+                title: 'ละติจูด (Lat)',
                 controller: latitudeController,
-                validator: (String? input) {
-                  if (input == null ||
-                      input.isEmpty ||
-                      double.tryParse(input) == null) {
-                    return 'กรุณากรอกละติจูดที่ถูกต้อง';
-                  }
-                  return null;
-                },
-              ),
-// ฟิลด์สำหรับกรอกลองจิจูด
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'ลองจิจูด (Lon)',
-                ),
                 keyboardType: TextInputType.number,
+                hintText: 'กรอกละติจูด',
+                validator: _validateCoordinate,
+              ),
+              _buildInputCard(
+                context,
+                title: 'ลองจิจูด (Lon)',
                 controller: longitudeController,
-                validator: (String? input) {
-                  if (input == null ||
-                      input.isEmpty ||
-                      double.tryParse(input) == null) {
-                    return 'กรุณากรอกลองจิจูดที่ถูกต้อง';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'พื้นที่หลังคาสำหรับติดตั้งแผงโซลาร์เซลล์ (ตร.ม.)',
-                ),
                 keyboardType: TextInputType.number,
+                hintText: 'กรอกลองจิจูด',
+                validator: _validateCoordinate,
+              ),
+              _buildInputCard(
+                context,
+                title: 'พื้นที่หลังคาสำหรับติดตั้ง (ตร.ม.)',
                 controller: roofAreaController,
-                validator: (String? input) {
-                  if (input == null ||
-                      input.isEmpty ||
-                      double.tryParse(input) == null ||
-                      double.parse(input) < 0) {
-                    return 'กรุณากรอกข้อมูลที่ถูกต้อง';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'ทิศทางของหลังคา (เช่น เหนือ ใต้ ออก ตก)',
-                ),
-                keyboardType: TextInputType.text,
-                controller: roofDirectionController,
-                validator: (String? input) {
-                  if (input == null || input.isEmpty) {
-                    return 'กรุณากรอกทิศทางของหลังคา';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'เครื่องใช้ไฟฟ้าที่ใช้บ่อย',
-                ),
-                keyboardType: TextInputType.text,
-                controller: appliancesController,
-                validator: (String? input) {
-                  if (input == null || input.isEmpty) {
-                    return 'กรุณากรอกข้อมูลเครื่องใช้ไฟฟ้า';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'งบประมาณที่สามารถใช้ในการติดตั้ง (บาท)',
-                ),
                 keyboardType: TextInputType.number,
-                controller: installationBudgetController,
-                validator: (String? input) {
-                  if (input == null ||
-                      input.isEmpty ||
-                      double.tryParse(input) == null ||
-                      double.parse(input) <= 0) {
-                    return 'กรุณากรอกงบประมาณที่ถูกต้อง';
-                  }
-                  return null;
-                },
+                hintText: 'กรอกพื้นที่หลังคา',
+                validator: _validateNumber,
               ),
-
-              TextButton(
-                child: const Text('Save'),
+              _buildInputCard(
+                context,
+                title: 'ทิศทางของหลังคา',
+                controller: roofDirectionController,
+                keyboardType: TextInputType.text,
+                hintText: 'เช่น เหนือ ใต้ ออก ตก',
+                validator: _validateText,
+              ),
+              _buildInputCard(
+                context,
+                title: 'เครื่องใช้ไฟฟ้าที่ใช้บ่อย',
+                controller: appliancesController,
+                keyboardType: TextInputType.text,
+                hintText: 'เช่น แอร์, ทีวี, ตู้เย็น',
+                validator: _validateText,
+              ),
+              _buildInputCard(
+                context,
+                title: 'งบประมาณในการติดตั้ง (บาท)',
+                controller: installationBudgetController,
+                keyboardType: TextInputType.number,
+                hintText: 'กรอกงบประมาณ',
+                validator: _validateNumber,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    var provider = Provider.of<RenewableEnergyProvider>(context,
-                        listen: false);
+                    var provider = Provider.of<RenewableEnergyProvider>(
+                      context,
+                      listen: false,
+                    );
 
                     double lat = double.parse(latitudeController.text);
                     double lon = double.parse(longitudeController.text);
                     double roofArea = double.parse(roofAreaController.text);
                     String roofDirection = roofDirectionController.text;
 
-                    // เรียกใช้ฟังก์ชันและใช้ค่าที่ได้
                     var analysisResult = await provider.fetchAndAnalyzeData(
                       lat: lat,
                       lon: lon,
@@ -195,7 +130,6 @@ class FormScreen extends StatelessWidget {
                     double sunlightHours = analysisResult['sunlightHours'];
                     double windSpeed = analysisResult['windSpeed'];
 
-                    // สร้างวัตถุ RenewableEnergy จากข้อมูลที่ผู้ใช้กรอกและคำแนะนำ
                     var renewableEnergy = RenewableEnergy(
                       keyID: null,
                       energyType: recommendation,
@@ -228,11 +162,71 @@ class FormScreen extends StatelessWidget {
                     );
                   }
                 },
+                child: const Text('บันทึกข้อมูล'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12.0,
+                    horizontal: 32.0,
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildInputCard(
+    BuildContext context, {
+    required String title,
+    required TextEditingController controller,
+    required TextInputType keyboardType,
+    required String hintText,
+    required String? Function(String?) validator,
+  }) {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          decoration: InputDecoration(
+            labelText: title,
+            hintText: hintText,
+            border: OutlineInputBorder(),
+          ),
+          validator: validator,
+        ),
+      ),
+    );
+  }
+
+  String? _validateNumber(String? input) {
+    if (input == null ||
+        input.isEmpty ||
+        double.tryParse(input) == null ||
+        double.parse(input) < 0) {
+      return 'กรุณากรอกข้อมูลที่ถูกต้อง';
+    }
+    return null;
+  }
+
+  String? _validateCoordinate(String? input) {
+    if (input == null || input.isEmpty || double.tryParse(input) == null) {
+      return 'กรุณากรอกค่าที่ถูกต้อง';
+    }
+    return null;
+  }
+
+  String? _validateText(String? input) {
+    if (input == null || input.isEmpty) {
+      return 'กรุณากรอกข้อมูล';
+    }
+    return null;
   }
 }
