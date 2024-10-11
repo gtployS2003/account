@@ -9,8 +9,8 @@ class RenewableEnergy {
   final String roofDirection;
   final String appliances;
   final double installationBudget;
-  final double sunlightHours; // เพิ่มฟิลด์นี้
-  final double windSpeed; // เพิ่มฟิลด์นี้
+  final double sunlightHours;
+  final double windSpeed; 
 
   RenewableEnergy({
     this.keyID,
@@ -23,8 +23,8 @@ class RenewableEnergy {
     required this.roofDirection,
     required this.appliances,
     required this.installationBudget,
-    required this.sunlightHours, // เพิ่มฟิลด์นี้
-    required this.windSpeed, // เพิ่มฟิลด์นี้
+    required this.sunlightHours, 
+    required this.windSpeed,
   });
 
   Map<String, dynamic> toMap() {
@@ -39,8 +39,8 @@ class RenewableEnergy {
       'roofDirection': roofDirection,
       'appliances': appliances,
       'installationBudget': installationBudget,
-      'sunlightHours': sunlightHours, // บันทึกข้อมูล sunlightHours
-      'windSpeed': windSpeed, // บันทึกข้อมูล windSpeed
+      'sunlightHours': sunlightHours,
+      'windSpeed': windSpeed,
     };
   }
 }

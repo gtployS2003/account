@@ -6,41 +6,37 @@ import 'dart:convert';
 
 class RenewableEnergyProvider with ChangeNotifier {
   List<RenewableEnergy> energies = [];
-  double _sunlightHours = 0.0; // เพิ่มฟิลด์นี้
-  double _windSpeed = 0.0; // เพิ่มฟิลด์นี้
+  double _sunlightHours = 0.0;
+  double _windSpeed = 0.0;
 
-  // สร้าง getter สำหรับ sunlightHours และ windSpeed
+
   double get sunlightHours => _sunlightHours;
   double get windSpeed => _windSpeed;
 
-  // ฟังก์ชันคำนวณชั่วโมงแสงอาทิตย์จากค่าของ sunrise และ sunset
+
   double calculateSunlightHours(int sunrise, int sunset) {
     return (sunset - sunrise) / 3600;
   }
 
-  // ฟังก์ชันสำหรับดึงข้อมูลพลังงานหมุนเวียนทั้งหมด
   List<RenewableEnergy> getEnergies() {
     return energies;
   }
 
-  // ฟังก์ชันสำหรับโหลดข้อมูลเริ่มต้นจากฐานข้อมูล
   void initData() async {
     var db = RenewableEnergyDB(dbName: 'renewable_energy.db');
     this.energies = await db.loadAllData();
     notifyListeners();
   }
 
-  // ฟังก์ชันสำหรับเพิ่มข้อมูลพลังงานหมุนเวียนใหม่
   void addEnergy(RenewableEnergy energy) async {
     var db = RenewableEnergyDB(dbName: 'renewable_energy.db');
     var keyID = await db.insertDatabase(energy);
     if (keyID != null) {
       this.energies = await db.loadAllData();
-      notifyListeners(); // ตรวจสอบว่า notifyListeners() ถูกเรียกใช้หลังจากโหลดข้อมูล
+      notifyListeners(); 
     }
   }
 
-  // ฟังก์ชันสำหรับดึงข้อมูลสภาพอากาศจาก API
   Future<Map<String, dynamic>> fetchWeatherData(double lat, double lon) async {
     final apiKey = 'f14cd842fcff44e359e0d20dc5ccf46f';
     final url =
@@ -50,7 +46,7 @@ class RenewableEnergyProvider with ChangeNotifier {
 
     if (response.statusCode == 200) {
       print(
-          'Weather data: ${response.body}'); // เพิ่มบรรทัดนี้เพื่อตรวจสอบข้อมูลที่ได้รับ
+          'Weather data: ${response.body}');
       return json.decode(response.body);
     } else {
       print('Failed to load weather data: ${response.statusCode}');
@@ -58,7 +54,6 @@ class RenewableEnergyProvider with ChangeNotifier {
     }
   }
 
-  // ฟังก์ชันวิเคราะห์ข้อมูลบ้านเพื่อแนะนำพลังงานหมุนเวียนที่เหมาะสม
   Future<String> analyzeAndRecommendEnergy({
     required double sunlightHours,
     required double windSpeed,
@@ -68,7 +63,6 @@ class RenewableEnergyProvider with ChangeNotifier {
   }) async {
     String recommendation;
 
-    // วิเคราะห์ข้อมูลสภาพอากาศและบ้าน
     if (sunlightHours > 5 &&
         roofArea >= 20 &&
         (roofDirection == 'ใต้' ||
@@ -95,7 +89,6 @@ class RenewableEnergyProvider with ChangeNotifier {
     return recommendation;
   }
 
-  // ฟังก์ชันวิเคราะห์และแสดงคำแนะนำพลังงานหมุนเวียนที่เหมาะสม
   Future<Map<String, dynamic>> fetchAndAnalyzeData({
     required double lat,
     required double lon,
@@ -148,7 +141,6 @@ class RenewableEnergyProvider with ChangeNotifier {
     }
   }
 
-  // ฟังก์ชันลบข้อมูลพลังงานหมุนเวียน
   void deleteEnergy(int? index) async {
     var db = RenewableEnergyDB(dbName: 'renewable_energy.db');
     await db.deleteDatabase(index);

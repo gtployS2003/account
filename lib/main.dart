@@ -3,7 +3,7 @@ import 'package:account/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:account/provider/renewable_energy_provider.dart';  // เปลี่ยนจาก TransactionProvider เป็น RenewableEnergyProvider
+import 'package:account/provider/renewable_energy_provider.dart'; 
 
 void main() {
   runApp(const MyApp());
@@ -17,16 +17,16 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) {
-          return RenewableEnergyProvider();  // เปลี่ยนเป็น RenewableEnergyProvider
+          return RenewableEnergyProvider();
         }),
       ],
       child: MaterialApp(
         theme: ThemeData(
-          fontFamily: 'Sarabun',  // ใช้ฟอนต์ Sarabun ที่รองรับภาษาไทย
+          fontFamily: 'Sarabun',  
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           useMaterial3: true,
         ),
-        locale: const Locale('th', 'TH'),  // กำหนดค่า locale ให้รองรับภาษาไทย
+        locale: const Locale('th', 'TH'),  
         supportedLocales: const [
           Locale('en', 'US'),
           Locale('th', 'TH'),
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        home: const MyHomePage(),  // ใช้ MyHomePage เป็นหน้าเริ่มต้น
+        home: const MyHomePage(), 
       ),
     );
   }

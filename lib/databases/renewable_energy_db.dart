@@ -3,7 +3,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
-import 'package:account/models/renewable_energy.dart'; // ปรับเป็นโมเดล Renewable Energy
+import 'package:account/models/renewable_energy.dart';
 
 class RenewableEnergyDB {
   String dbName;
@@ -19,7 +19,7 @@ class RenewableEnergyDB {
       return 0.0;
     }
   }
-  // ฟังก์ชันเปิดฐานข้อมูล
+
   Future<Database> openDatabase() async {
     Directory appDirectory = await getApplicationDocumentsDirectory();
     String dbLocation = join(appDirectory.path, dbName);
@@ -29,7 +29,7 @@ class RenewableEnergyDB {
     return db;
   }
 
-  // ฟังก์ชันเพิ่มข้อมูลพลังงานหมุนเวียนในฐานข้อมูล
+
   Future<int> insertDatabase(RenewableEnergy energy) async {
   var db = await this.openDatabase();
   var store = intMapStoreFactory.store('energy');
@@ -51,7 +51,7 @@ class RenewableEnergyDB {
   return keyID;
 }
 
-  // ฟังก์ชันโหลดข้อมูลพลังงานหมุนเวียนทั้งหมดจากฐานข้อมูล
+
   Future<List<RenewableEnergy>> loadAllData() async {
     var db = await this.openDatabase();
     var store = intMapStoreFactory.store('energy');
@@ -80,7 +80,7 @@ class RenewableEnergyDB {
     return energies;
   }
 
-  // ฟังก์ชันลบข้อมูลพลังงานหมุนเวียน
+
   deleteDatabase(int? index) async {
     var db = await this.openDatabase();
     var store = intMapStoreFactory.store('energy');
