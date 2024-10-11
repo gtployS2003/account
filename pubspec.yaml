@@ -101,6 +101,6 @@ flutter:
   fonts:
     - family: Sarabun
       fonts:
-        - asset: fonts/Sarabun-Regular.ttf
-        - asset: fonts/Sarabun-Bold.ttf
+        - asset: assets/fonts/Sarabun-Bold.ttf
+        - asset: assets/fonts/Sarabun-Bold.ttf
           weight: 700
